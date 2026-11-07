@@ -1,0 +1,23 @@
+services:
+  ctr-inference-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      network: host
+    container_name: ctr_rtb_service
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_NAME=CTR RTB Inference Service
+      - LOG_LEVEL=INFO
+      - BID_THRESHOLD=0.3821
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=2)"]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
